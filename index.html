@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ペリノタスク</title>
+<style>
+  :root {
+    --cream: #F3F9F8;
+    --cream-deep: #E1EFEC;
+    --orange: #5FA6A3;
+    --orange-deep: #4A8B88;
+    --sky: #ABD2D0;
+    --sky-deep: #8CC0BD;
+    --navy: #2E4B49;
+    --red: #C0454B;
+    --brown: #5C726F;
+    --white: #FFFFFF;
+    --text: #2E3B3A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 16px 8px;
+  }
+
+  .header .mascot { width: 48px; height: 48px; flex-shrink: 0; }
+
+  .header h1 {
+    font-size: 18px;
+    margin: 0;
+    color: var(--navy);
+  }
+
+  .header .sub {
+    font-size: 11px;
+    color: var(--brown);
+    margin-top: 2px;
+  }
+
+  .tabs {
+    display: flex;
+    margin: 8px 16px 0;
+    background: var(--white);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brown);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .tab-btn.active {
+    background: var(--orange);
+    color: white;
+  }
+
+  .panel { display: none; padding: 16px; padding-bottom: 90px; }
+  .panel.active { display: block; }
+
+  .add-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .add-row input {
+    flex: 1;
+    padding: 12px 14px;
+    border: 2px solid var(--sky);
+    border-radius: 12px;
+    font-size: 14px;
+    background: var(--white);
+  }
+
+  .add-row input:focus { outline: none; border-color: var(--orange); }
+
+  .add-row button {
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0 18px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .task-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .task-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--white);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 5px solid var(--sky);
+  }
+
+  .task-card.done {
+    border-left-color: var(--orange);
+    opacity: 0.6;
+  }
+
+  .task-card .check {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--sky-deep);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+  }
+
+  .task-card.done .check { background: var(--orange); border-color: var(--orange-deep); }
+
+  .task-card .title {
+    flex: 1;
+    font-size: 14px;
+    word-break: break-word;
+  }
+
+  .task-card.done .title { text-decoration: line-through; color: var(--brown); }
+
+  .task-card .del {
+    color: var(--red);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px 8px;
+    flex-shrink: 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--brown);
+    padding: 40px 16px;
+    font-size: 13px;
+  }
+
+  .rank-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--white);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .rank-num {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--orange-deep);
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .rank-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--sky);
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--white);
+    box-shadow: 0 0 0 1px var(--sky-deep);
+  }
+
+  .rank-info { flex: 1; }
+  .rank-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .rank-stats { font-size: 12px; color: var(--brown); margin-top: 2px; }
+
+  .rank-badge {
+    background: var(--navy);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .loading { text-align: center; padding: 40px; color: var(--brown); font-size: 13px; }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.25s;
+    pointer-events: none;
+  }
+
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <svg class="mascot" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- ペリノ風の簡易マスコット（新規イラスト） -->
+    <ellipse cx="50" cy="58" rx="30" ry="26" fill="#FFFDF8" stroke="#6B4A2F" stroke-width="2.5"/>
+    <path d="M20 45 Q 25 20 45 22 Q 40 32 38 42 Z" fill="#F5E6CE" stroke="#6B4A2F" stroke-width="2"/>
+    <ellipse cx="38" cy="52" rx="5" ry="6" fill="#3B2E22"/>
+    <path d="M46 55 Q 75 50 78 62 Q 76 68 55 66 Q 48 65 46 60 Z" fill="#F2994A" stroke="#6B4A2F" stroke-width="2.5"/>
+    <path d="M50 62 Q 65 63 75 62" stroke="#E07B29" stroke-width="1.5" fill="none"/>
+    <circle cx="30" cy="60" r="4" fill="#F2994A" opacity="0.5"/>
+    <path d="M35 78 L38 88 L44 80 Z" fill="#A9D8E8" stroke="#6B4A2F" stroke-width="1.5"/>
+    <path d="M30 82 Q40 92 55 90 Q60 88 58 84 Q45 88 30 82Z" fill="#2C3A56"/>
+    <path d="M42 84 L46 92 L50 84 Z" fill="#C0454B"/>
+  </svg>
+  <div>
+    <h1>ペリノタスク</h1>
+    <div class="sub" id="user-sub">読み込み中...</div>
+  </div>
+</div>
+
+<div style="margin: 0 16px 4px;">
+  <span id="id-toggle" style="font-size: 11px; color: var(--brown); text-decoration: underline; cursor: pointer;">Slack連携用のIDを表示</span>
+  <div id="id-box" style="display:none; margin-top:6px; background: var(--white); border-radius: 10px; padding: 10px 12px; font-size: 11px; color: var(--text); word-break: break-all;">
+    <div style="margin-bottom:6px; color: var(--brown);">このIDを管理者に伝えて、UserMapシートに登録してもらってください（Slackの<code>/task</code>コマンドを使うのに1回だけ必要です）。</div>
+    <code id="my-line-id">-</code>
+    <div style="margin-top:8px;">
+      <button onclick="copyMyId()" style="background: var(--sky-deep); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-size: 11px; cursor: pointer;">コピー</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" id="tab-mine-btn" onclick="switchTab('mine')">マイタスク</button>
+  <button class="tab-btn" id="tab-rank-btn" onclick="switchTab('rank')">みんなの進捗</button>
+</div>
+
+<div class="panel active" id="panel-mine">
+  <div class="add-row">
+    <input type="text" id="new-task-input" placeholder="新しいタスクを入力..." maxlength="100">
+    <button onclick="addTask()">＋</button>
+  </div>
+  <div class="task-list" id="task-list">
+    <div class="loading">読み込み中...</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-rank">
+  <div id="rank-list">
+    <div class="loading">読み込み中...</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+  // ▼▼▼ ここをご自身の LIFF ID と GAS の Web アプリ URL に書き換えてください ▼▼▼
+  const LIFF_ID = 'YOUR-LIFF-ID-HERE';
+  const GAS_API_URL = 'https://script.google.com/macros/s/YOUR-DEPLOYMENT-ID/exec';
+  // ▲▲▲ ここまで ▲▲▲
+
+  let profile = null;
+
+  /** GAS APIをGETで呼ぶ共通ヘルパー（書き込みもGETで統一。詳細はSETUP.md参照） */
+  function callApi(action, params) {
+    const query = new URLSearchParams({ action, ...params }).toString();
+    return fetch(GAS_API_URL + '?' + query)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.ok) throw new Error(data.error || 'unknown error');
+        return data;
+      });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  document.getElementById('id-toggle').addEventListener('click', () => {
+    const box = document.getElementById('id-box');
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  });
+
+  function copyMyId() {
+    const idText = document.getElementById('my-line-id').textContent;
+    navigator.clipboard.writeText(idText).then(() => showToast('コピーしました')).catch(() => showToast('コピーに失敗しました'));
+  }
+
+  function switchTab(name) {
+    document.getElementById('panel-mine').classList.toggle('active', name === 'mine');
+    document.getElementById('panel-rank').classList.toggle('active', name === 'rank');
+    document.getElementById('tab-mine-btn').classList.toggle('active', name === 'mine');
+    document.getElementById('tab-rank-btn').classList.toggle('active', name === 'rank');
+    if (name === 'rank') loadLeaderboard();
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderTasks(tasks) {
+    const el = document.getElementById('task-list');
+    if (!tasks || tasks.length === 0) {
+      el.innerHTML = '<div class="empty-state">タスクはまだありません。<br>上の入力欄から追加してみましょう。</div>';
+      return;
+    }
+    el.innerHTML = tasks.map(t => `
+      <div class="task-card ${t.status === 'done' ? 'done' : ''}">
+        <div class="check" onclick="toggleTask('${t.id}', '${t.status}')">${t.status === 'done' ? '✓' : ''}</div>
+        <div class="title">${escapeHtml(t.title)}</div>
+        <div class="del" onclick="removeTask('${t.id}')">削除</div>
+      </div>
+    `).join('');
+  }
+
+  function loadMyTasks() {
+    callApi('tasks', { userId: profile.userId })
+      .then(data => renderTasks(data.tasks))
+      .catch(err => showToast('読み込みエラー: ' + err.message));
+  }
+
+  function renderLeaderboard(list) {
+    const el = document.getElementById('rank-list');
+    if (!list || list.length === 0) {
+      el.innerHTML = '<div class="empty-state">まだ誰もタスクを登録していません。</div>';
+      return;
+    }
+    const sorted = list.slice().sort((a, b) => b.doneToday - a.doneToday || a.open - b.open);
+    el.innerHTML = sorted.map((u, i) => `
+      <div class="rank-card">
+        <div class="rank-num">${i + 1}</div>
+        <img class="rank-avatar" src="${u.pictureUrl || ''}" onerror="this.style.visibility='hidden'">
+        <div class="rank-info">
+          <div class="rank-name">${escapeHtml(u.displayName || '名無しさん')}</div>
+          <div class="rank-stats">残り ${u.open} 件 ／ 累計完了 ${u.doneTotal} 件</div>
+        </div>
+        <div class="rank-badge">今日 ${u.doneToday} 完了</div>
+      </div>
+    `).join('');
+  }
+
+  function loadLeaderboard() {
+    callApi('leaderboard', {})
+      .then(data => renderLeaderboard(data.leaderboard))
+      .catch(err => showToast('読み込みエラー: ' + err.message));
+  }
+
+  function addTask() {
+    if (!profile) { showToast('まだログインが完了していません（画面上部のエラーをご確認ください）'); return; }
+    const input = document.getElementById('new-task-input');
+    const title = input.value.trim();
+    if (!title) return;
+    input.value = '';
+    callApi('addTask', { userId: profile.userId, displayName: profile.displayName, pictureUrl: profile.pictureUrl || '', title })
+      .then(() => { loadMyTasks(); showToast('タスクを追加しました'); })
+      .catch(err => showToast('追加エラー: ' + err.message));
+  }
+
+  function toggleTask(id, currentStatus) {
+    if (!profile) { showToast('まだログインが完了していません'); return; }
+    const action = currentStatus === 'done' ? 'reopenTask' : 'completeTask';
+    callApi(action, { id })
+      .then(() => loadMyTasks())
+      .catch(err => showToast('更新エラー: ' + err.message));
+  }
+
+  function removeTask(id) {
+    if (!profile) { showToast('まだログインが完了していません'); return; }
+    callApi('deleteTask', { id })
+      .then(() => { loadMyTasks(); showToast('削除しました'); })
+      .catch(err => showToast('削除エラー: ' + err.message));
+  }
+
+  function setStatus(msg) {
+    const el = document.getElementById('user-sub');
+    if (el) el.textContent = msg;
+  }
+
+  function init() {
+    // 8秒経っても応答がなければ、無限ローディングにせずタイムアウト表示にする
+    let settled = false;
+    const timeoutId = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        setStatus('読み込みがタイムアウトしました（ネットワークまたはLIFF設定をご確認ください）');
+      }
+    }, 8000);
+
+    try {
+      if (typeof liff === 'undefined') {
+        throw new Error('LIFF SDKの読み込みに失敗しました（スクリプトがブロックされている可能性があります）');
+      }
+
+      liff.init({ liffId: LIFF_ID }).then(() => {
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+        return liff.getProfile();
+      }).then(p => {
+        if (!p) return; // login()でリダイレクト中
+        settled = true;
+        clearTimeout(timeoutId);
+        profile = p;
+        setStatus(profile.displayName + ' さん');
+        document.getElementById('my-line-id').textContent = profile.userId;
+        loadMyTasks();
+      }).catch(err => {
+        settled = true;
+        clearTimeout(timeoutId);
+        const msg = (err && err.message) ? err.message : JSON.stringify(err);
+        setStatus('LIFFエラー: ' + msg);
+        showToast('LIFF初期化エラー: ' + msg);
+      });
+    } catch (err) {
+      settled = true;
+      clearTimeout(timeoutId);
+      setStatus('初期化エラー: ' + err.message);
+      showToast('初期化例外: ' + err.message);
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
