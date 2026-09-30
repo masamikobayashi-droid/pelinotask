@@ -81,12 +81,13 @@
     flex: 1;
     border: none;
     background: transparent;
-    padding: 10px 8px;
-    font-size: 14px;
+    padding: 10px 4px;
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--brown);
     border-radius: 999px;
     cursor: pointer;
+    white-space: nowrap;
   }
 
   .tab-btn.active {
@@ -249,22 +250,55 @@
   }
 
   .toast.show { opacity: 1; }
+
+  .help-section { margin-bottom: 22px; }
+  .help-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    color: var(--navy);
+    margin: 0 0 8px;
+  }
+  .help-icon { width: 24px; height: 24px; flex-shrink: 0; }
+  .help-section p, .help-section li {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.7;
+    margin: 0 0 4px;
+  }
+  .help-section ol, .help-section ul { margin: 4px 0 4px; padding-left: 20px; }
+  .help-section .note {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--brown);
+    margin-top: 6px;
+  }
 </style>
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="mascot-icon" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="58" rx="30" ry="26" fill="#FFFDF8" stroke="#6B4A2F" stroke-width="2.5"/>
+      <path d="M20 45 Q 25 20 45 22 Q 40 32 38 42 Z" fill="#F5E6CE" stroke="#6B4A2F" stroke-width="2"/>
+      <ellipse cx="38" cy="52" rx="5" ry="6" fill="#3B2E22"/>
+      <path d="M46 55 Q 75 50 78 62 Q 76 68 55 66 Q 48 65 46 60 Z" fill="#F2994A" stroke="#6B4A2F" stroke-width="2.5"/>
+      <path d="M50 62 Q 65 63 75 62" stroke="#E07B29" stroke-width="1.5" fill="none"/>
+      <circle cx="30" cy="60" r="4" fill="#F2994A" opacity="0.5"/>
+      <path d="M35 78 L38 88 L44 80 Z" fill="#A9D8E8" stroke="#6B4A2F" stroke-width="1.5"/>
+      <path d="M30 82 Q40 92 55 90 Q60 88 58 84 Q45 88 30 82Z" fill="#2C3A56"/>
+      <path d="M42 84 L46 92 L50 84 Z" fill="#C0454B"/>
+    </symbol>
+  </defs>
+</svg>
+
 <div class="header">
   <svg class="mascot" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <!-- ペリノ風の簡易マスコット（新規イラスト） -->
-    <ellipse cx="50" cy="58" rx="30" ry="26" fill="#FFFDF8" stroke="#6B4A2F" stroke-width="2.5"/>
-    <path d="M20 45 Q 25 20 45 22 Q 40 32 38 42 Z" fill="#F5E6CE" stroke="#6B4A2F" stroke-width="2"/>
-    <ellipse cx="38" cy="52" rx="5" ry="6" fill="#3B2E22"/>
-    <path d="M46 55 Q 75 50 78 62 Q 76 68 55 66 Q 48 65 46 60 Z" fill="#F2994A" stroke="#6B4A2F" stroke-width="2.5"/>
-    <path d="M50 62 Q 65 63 75 62" stroke="#E07B29" stroke-width="1.5" fill="none"/>
-    <circle cx="30" cy="60" r="4" fill="#F2994A" opacity="0.5"/>
-    <path d="M35 78 L38 88 L44 80 Z" fill="#A9D8E8" stroke="#6B4A2F" stroke-width="1.5"/>
-    <path d="M30 82 Q40 92 55 90 Q60 88 58 84 Q45 88 30 82Z" fill="#2C3A56"/>
-    <path d="M42 84 L46 92 L50 84 Z" fill="#C0454B"/>
+    <use href="#mascot-icon"/>
   </svg>
   <div>
     <h1>ペリノタスク</h1>
@@ -286,6 +320,7 @@
 <div class="tabs">
   <button class="tab-btn active" id="tab-mine-btn" onclick="switchTab('mine')">マイタスク</button>
   <button class="tab-btn" id="tab-rank-btn" onclick="switchTab('rank')">みんなの進捗</button>
+  <button class="tab-btn" id="tab-help-btn" onclick="switchTab('help')">使い方</button>
 </div>
 
 <div class="panel active" id="panel-mine">
@@ -304,13 +339,47 @@
   </div>
 </div>
 
+<div class="panel" id="panel-help">
+
+  <div class="help-section">
+    <h3><svg class="help-icon"><use href="#mascot-icon"/></svg>このアプリの目的</h3>
+    <p>自分のタスクを管理しながら、メンバー同士で「残りタスク数」や「完了数」を共有して、ゆるく競い合いつつタスクを片付けていくためのアプリです。</p>
+    <div class="note">自分のタスクの内容は自分にしか見えません。「みんなの進捗」タブで他の人に見えるのは件数だけです。</div>
+  </div>
+
+  <div class="help-section">
+    <h3><svg class="help-icon"><use href="#mascot-icon"/></svg>最初にやること（ID登録）</h3>
+    <ol>
+      <li>この「使い方」タブの上にある「Slack連携用のIDを表示」をタップし、表示されたIDを「コピー」する</li>
+      <li>Slackで <code>/taskjp</code> とだけ送ってみる（本文なしでOK）</li>
+      <li>コピーしたIDと、Slackの自分のメンバーID（プロフィール→その他→「メンバーIDをコピー」）を管理者に伝えて、登録してもらう</li>
+      <li>登録が済んだら、Slackから <code>/taskjp ○○</code> でタスクを追加できるようになります</li>
+    </ol>
+  </div>
+
+  <div class="help-section">
+    <h3><svg class="help-icon"><use href="#mascot-icon"/></svg>タスクの追加・完了・削除</h3>
+    <ul>
+      <li><b>追加</b>：「マイタスク」タブの入力欄に入力して＋ボタン、または Slackで <code>/taskjp タスク内容</code> と送る</li>
+      <li><b>完了</b>：タスク左側の丸いボタンをタップ（もう一度タップすると未完了に戻せます）</li>
+      <li><b>削除</b>：タスク右側の「削除」をタップ</li>
+    </ul>
+  </div>
+
+  <div class="help-section">
+    <h3><svg class="help-icon"><use href="#mascot-icon"/></svg>毎朝のリマインダー</h3>
+    <p>未完了タスクが1件以上ある人にだけ、毎朝LINEに「残り◯件あります」という通知が届きます。届かない場合は、公式アカウントを友だち追加できているか確認してください。</p>
+  </div>
+
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
   // ▼▼▼ ここをご自身の LIFF ID と GAS の Web アプリ URL に書き換えてください ▼▼▼
-  const LIFF_ID = '2011800422-n3zXmb2R';
-  const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyUu_G4o2EX9FJveCsz3W5QFtyVSwZuAozHEDamiuHcrCe0zD6NurdQ6KZqO8GScEM8/exec';
+  const LIFF_ID = 'YOUR-LIFF-ID-HERE';
+  const GAS_API_URL = 'https://script.google.com/macros/s/YOUR-DEPLOYMENT-ID/exec';
   // ▲▲▲ ここまで ▲▲▲
 
   let profile = null;
@@ -346,8 +415,10 @@
   function switchTab(name) {
     document.getElementById('panel-mine').classList.toggle('active', name === 'mine');
     document.getElementById('panel-rank').classList.toggle('active', name === 'rank');
+    document.getElementById('panel-help').classList.toggle('active', name === 'help');
     document.getElementById('tab-mine-btn').classList.toggle('active', name === 'mine');
     document.getElementById('tab-rank-btn').classList.toggle('active', name === 'rank');
+    document.getElementById('tab-help-btn').classList.toggle('active', name === 'help');
     if (name === 'rank') loadLeaderboard();
   }
 
