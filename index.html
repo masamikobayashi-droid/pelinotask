@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>ペリノタスク</title>
 <style>
   :root {
@@ -18,21 +19,36 @@
     --text: #2E3B3A;
   }
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
 
   body {
-    margin: 0;
+    margin: 0 auto;
+    max-width: 480px;
     font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
     background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
     color: var(--text);
     min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .header {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 16px 16px 8px;
+    padding: max(16px, env(safe-area-inset-top)) 16px 8px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--cream);
   }
 
   .header .mascot { width: 48px; height: 48px; flex-shrink: 0; }
@@ -56,6 +72,9 @@
     border-radius: 999px;
     padding: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 68px;
+    z-index: 4;
   }
 
   .tab-btn {
@@ -86,10 +105,11 @@
 
   .add-row input {
     flex: 1;
+    min-width: 0;
     padding: 12px 14px;
     border: 2px solid var(--sky);
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 16px;
     background: var(--white);
   }
 
@@ -104,6 +124,8 @@
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
+    flex-shrink: 0;
+    min-width: 48px;
   }
 
   .task-list { display: flex; flex-direction: column; gap: 10px; }
@@ -125,8 +147,8 @@
   }
 
   .task-card .check {
-    width: 26px;
-    height: 26px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     border: 2px solid var(--sky-deep);
     flex-shrink: 0;
@@ -134,7 +156,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     color: white;
   }
 
@@ -152,7 +174,8 @@
     color: var(--red);
     font-size: 12px;
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 10px 6px;
+    margin: -10px -6px;
     flex-shrink: 0;
   }
 
@@ -286,7 +309,7 @@
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
   // ▼▼▼ ここをご自身の LIFF ID と GAS の Web アプリ URL に書き換えてください ▼▼▼
-  const LIFF_ID = '2011800422-n3zXmb2R';
+  const LIFF_ID = 'YOUR-LIFF-ID-HERE';
   const GAS_API_URL = 'https://script.google.com/macros/s/YOUR-DEPLOYMENT-ID/exec';
   // ▲▲▲ ここまで ▲▲▲
 
